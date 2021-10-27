@@ -1,0 +1,34 @@
+# 基础镜像: alg_base_ubuntu_samll_amd64:1.0.0
+# ubuntu 20
+# Package                        Version
+# ------------------------------ ---------
+# certifi                        2021.10.8
+# charset-normalizer             2.0.7
+# GDAL                           3.3.0
+# idna                           3.3
+# numpy                          1.21.2
+# opencv-contrib-python-headless 4.5.3.56
+# pip                            20.0.2
+# PyYAML                         5.4.1
+# requests                       2.26.0
+# setuptools                     45.2.0
+# urllib3                        1.26.7
+# wheel                          0.34.2
+
+FROM osgeo/gdal:ubuntu-small-latest-amd64
+ENV is_prod_env=True
+
+RUN mkdir -p /app \
+&& mkdir -p /data_mining/data  \
+&& mkdir -p /data_mining/result \
+&& mkdir -p /data_mining/logs \
+&& mkdir -p /data_mining/shp \
+&& mkdir -p /data_mining/model \
+&& sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
+&& sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list \
+&& apt-get update \
+&& sh -c '/bin/echo -e "Y\n" | apt-get  install python3-pip' \
+&& sh -c '/bin/echo -e "Y\n" | apt-get install libgl1-mesa-glx' \
+&& pip3 install -i https://pypi.mirrors.ustc.edu.cn/simple/ --no-cache-dir opencv-contrib-python-headless==4.5.3.56 requests==2.26.0 PyYAML==5.4.1 \
+&& pip3 install --upgrade -i https://pypi.mirrors.ustc.edu.cn/simple/ --no-cache-dir numpy==1.21.2 \
+&& apt-get clean &&  apt-get autoclean
